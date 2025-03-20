@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { SuperSEO } from "react-super-seo";
 import { useForm} from 'react-hook-form'
 import {z} from 'zod'
+import {toast, Toaster} from 'sonner'
 
 
 const signInForm = z.object({
@@ -14,11 +15,28 @@ type SignInForm = z.infer<typeof signInForm>
 
 export function SignIn() {
 
-    const {register,handleSubmit}= useForm()
+    const {
+        register,
+        handleSubmit,
+    formState:{isSubmitting}
+        }= useForm<SignInForm>()
+ 
+   async function handleSignIn(data:SignInForm){
+    try{
+    console.log(data)
 
-    async function handleSignIn(data:SignInForm){
-        await new Promise(resolve)=>setTimeout(resolve,2000)
-
+    throw new Error()
+    await new Promise((resolve)=>setTimeout(resolve,2000))
+   
+   
+    }catch{
+        toast.error('Credenciais invalidas',{
+            action:{
+                label:'Reenviar',
+                onClick:()=>{handleSignIn(data)}
+            }
+        })
+    }
     }
 
     return (
@@ -42,7 +60,7 @@ export function SignIn() {
                            <Label htmlFor="email"> Seu e-mail</Label>
                            <Input id="email" type="email" {...register('email')}/>
                       </div>
-                     <Button type="submit"className="bg-red-500" >Acessar painel</Button>
+                     <Button disabled={isSubmitting} type="submit"className="bg-red-500" >Acessar painel</Button>
                    </form>
                 </div>
 
