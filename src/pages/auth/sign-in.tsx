@@ -4,7 +4,9 @@ import { Label } from "@/components/ui/label";
 import { SuperSEO } from "react-super-seo";
 import { useForm} from 'react-hook-form'
 import {z} from 'zod'
-import {toast, Toaster} from 'sonner'
+import {toast} from 'sonner'
+import { Link } from "react-router-dom";
+import { Ghost } from "lucide-react";
 
 
 const signInForm = z.object({
@@ -44,6 +46,11 @@ export function SignIn() {
             <SuperSEO title="Login" description="Hi!" />
 
             <div className="p-8">
+                <Button variant="ghost" asChild className="absolute right-8 top-8">
+                <Link to='/sign-up' >
+                Novo estabelecimento
+                </Link>
+                </Button>
                 <div className="w-[350px] flex flex-col justify-between gap-6">
                     <div className="flex flex-col gap-2 text-center">
                         <h1 className="text-2xl font-semibold tracking-tight">
