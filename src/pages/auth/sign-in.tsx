@@ -2,15 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SuperSEO } from "react-super-seo";
-import { useForm} from 'react-hook-form'
-import {z} from 'zod'
-import {toast} from 'sonner'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { toast } from 'sonner'
 import { Link } from "react-router-dom";
-import { Ghost } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { signIn } from "@/api/sign-in";
 
 
 const signInForm = z.object({
-    email:z.string().email()
+    email: z.string().email()
 })
 
 type SignInForm = z.infer<typeof signInForm>
@@ -20,25 +21,26 @@ export function SignIn() {
     const {
         register,
         handleSubmit,
-    formState:{isSubmitting}
-        }= useForm<SignInForm>()
- 
-   async function handleSignIn(data:SignInForm){
-    try{
-    console.log(data)
+        formState: { isSubmitting }
+    } = useForm<SignInForm>()
 
-    throw new Error()
-    await new Promise((resolve)=>setTimeout(resolve,2000))
-   
-   
-    }catch{
-        toast.error('Credenciais invalidas',{
-            action:{
-                label:'Reenviar',
-                onClick:()=>{handleSignIn(data)}
-            }
-        })
-    }
+    const {mutateAsync :authenticate} = useMutation({
+        mutationFn: signIn,
+    })
+
+    async function handleSignIn(data: SignInForm) {
+        try {
+            await authenticate({email:data.email})
+
+
+        } catch {
+            toast.error('Credenciais invalidas', {
+                action: {
+                    label: 'Reenviar',
+                    onClick: () => { handleSignIn(data) }
+                }
+            })
+        }
     }
 
     return (
@@ -47,9 +49,9 @@ export function SignIn() {
 
             <div className="p-8">
                 <Button variant="ghost" asChild className="absolute right-8 top-8">
-                <Link to='/sign-up' >
-                Novo estabelecimento
-                </Link>
+                    <Link to='/sign-up' >
+                        Novo estabelecimento
+                    </Link>
                 </Button>
                 <div className="w-[350px] flex flex-col justify-between gap-6">
                     <div className="flex flex-col gap-2 text-center">
@@ -62,13 +64,13 @@ export function SignIn() {
 
                     </div>
 
-                   <form onSubmit={handleSubmit(handleSignIn)}  className="flex flex-col gap-4" >
-                      <div className="space-y-2">
-                           <Label htmlFor="email"> Seu e-mail</Label>
-                           <Input id="email" type="email" {...register('email')}/>
-                      </div>
-                     <Button disabled={isSubmitting} type="submit"className="bg-red-500" >Acessar painel</Button>
-                   </form>
+                    <form onSubmit={handleSubmit(handleSignIn)} className="flex flex-col gap-4" >
+                        <div className="space-y-2">
+                            <Label htmlFor="email"> Seu e-mail</Label>
+                            <Input id="email" type="email" {...register('email')} />
+                        </div>
+                        <Button disabled={isSubmitting} type="submit" className="bg-red-500" >Acessar painel</Button>
+                    </form>
                 </div>
 
             </div>
